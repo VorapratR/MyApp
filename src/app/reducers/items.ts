@@ -55,5 +55,8 @@ export const {
 } = adapter.getSelectors(getItemsState);
 
 export const getLoading = (state: State) => state.loading;
-
 export const getError = (state: State) => state.error;
+export const getItemsError = createSelector(
+  getItemsState,
+  getError,
+);

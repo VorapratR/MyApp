@@ -2,7 +2,7 @@ import * as fromRoot from '../../reducers';
 import * as fromTopStories from './top-stories';
 import * as fromPagination from './pagination';
 import { ActionReducerMap, createFeatureSelector, createSelector } from '@ngrx/store';
-import { getItemEntities } from '../../reducers/items';
+import { getItemEntities,  getItemsError } from '../../reducers/items';
 
 export interface TopStoriesState {
     stories: fromTopStories.State;
@@ -50,6 +50,7 @@ export const getTopStoriesError = createSelector(
   getStoriesState,
   fromTopStories.getError,
 );
+
 export const getError = createSelector(
     getTopStoriesError,
     getItemsError,
