@@ -1,88 +1,78 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { from, Observable, Subscription } from 'rxjs';
+import { select, Store } from '@ngrx/store';
 import { Items } from '../models/items';
-import { Subscription } from 'rxjs';
-import { ItemService } from '../services/item/item.service';
-import { concat } from 'lodash';
-
+import { LoadingController, ToastController } from '@ionic/angular';
+import * as fromTopStories from './reducers';
+import * as topStoriesActions from './actions/top-stories';
+import * as fromItems from '../reducers/items';
+import { filter, concatMap } from 'rxjs/operators';
 @Component({
   selector: 'app-top-stories',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './top-stories.component.html',
   styleUrls: ['./top-stories.component.scss'],
 })
 export class TopStoriesComponent implements OnInit, OnDestroy {
-  items: Items;
-  private subscription: Subscription;
-  private offset = 0;
-  private limit = 10;
+  items$: Observable<Items>;
+  private itemsLoading$: Observable<boolean>;
+  private idsLoading$: Observable<boolean>;
+  private errors$: Observable<any>;
   private infiniteScrollComponent: any;
   private refresherComponent: any;
+  private loading: HTMLIonLoadingElement;
+  private subscriptions: Subscription[];
 
-  constructor(private itemService: ItemService) { }
-  ngOnInit() {
-    this.subscription = this.itemService.get().
-      subscribe(items => {
-        if (items.refresh) {
-          this.items = items;
-          this.notifyRefreshComplete();
-        } else {
-          this.items = {
-            ...this.items,
-            results: concat(this.items.results, items.results),
-          };
-          this.notifyScrollComplete();
-        }
-      });
-    this.doLoad(true)
+  constructor(
+    private store: Store<fromTopStories.State>,
+    private loadingCtrl: LoadingController,
+    private toastCtrl: ToastController
+  ) {
+    // this.items$ = store.pipe(select(fromTopStories.getDisplayItems));
+    // this.itemsLoading$ = store.pipe(select(fromTopStories.isItemsLoading));
+    this.items$ = store.pipe(select(fromTopStories.getDisplayItems));
+    this.itemsLoading$ = store.pipe(select(fromItems.isItemsLoading));
+    this.idsLoading$ = store.pipe(select(fromTopStories.isTopStoriesLoading));
+    this.errors$ = store.pipe(select(fromTopStories.getError),
+    filter(error => error != null));
+    this.subscriptions = [];
   }
 
-  ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+  ngOnInit() {
+    this.subscriptions.push(this.itemsLoading$.subscribe(loading => {
+        if (!loading) {
+          this.notifyScrollComplete();
+        }
+      })
+    );
+    this.subscriptions.push(this.idsLoading$.pipe(concatMap(loading => {
+      return loading ? from(this.showLoading()) : from(this.hideLoading());
+    })).subscribe());
+    this.subscriptions.push(this.errors$.pipe(concatMap(error => from(this.showError(error)))).subscribe());
+    this.doLoad(true);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.
+    unsubscribe());
   }
 
   load(event) {
-    this.infiniteScrollComponent = event.target;    
-    if (this.hasNext()) {
-      this.next();
-    }
-  }
-
-  hasNext(): boolean {
-    return this.items != null && (this.offset + this.limit) <
-      this.items.total;
-  } 
-
-  next() {
-    if (!this.hasNext()) {
-      return;
-    }
-    this.offset += this.limit;
+    this.infiniteScrollComponent = event.target;
     this.doLoad(false);
-  }
-
-  canRefresh(): boolean {
-    return this.items != null;
   }
 
   refresh(event) {
     this.refresherComponent = event.target;
-    if (this.canRefresh()) {
-      this.doRefresh();
-    }
-  }
-
-  doRefresh() {
-    this.offset = 0;
     this.doLoad(true);
   }
 
-  private doLoad(refresh: boolean) {
-    this.itemService.load({
-      offset: this.offset,
-      limit: this.limit,
-      refresh,
-    });
+  doLoad(refresh: boolean) {
+    if (refresh) {
+    this.store.dispatch(new topStoriesActions.Refresh());
+    } else {
+    this.store.dispatch(new topStoriesActions.LoadMore());
+    }
   }
 
   private notifyScrollComplete(): void {
@@ -95,5 +85,32 @@ export class TopStoriesComponent implements OnInit, OnDestroy {
     if (this.refresherComponent) {
       this.refresherComponent.complete();
     }
+  }
+
+  private showLoading(): Promise<void> {
+    return this.hideLoading().then(() => {
+      return this.loadingCtrl.create({
+        message: 'Loading...',
+      }).then(loading => {
+        this.loading = loading;
+        return this.loading.present();
+      });
+    });
+  }
+
+  private hideLoading(): Promise<void> {
+    if (this.loading) {
+      this.notifyRefreshComplete();
+      return this.loading.dismiss().then(() => null);
+    }
+    return Promise.resolve();
+  }
+
+  private showError(error: any): Promise<void> {
+    return this.toastCtrl.create({
+      message: `An error occurred: ${error}`,
+      duration: 3000,
+      showCloseButton: true,
+    }).then(toast => toast.present());
   }
 }
