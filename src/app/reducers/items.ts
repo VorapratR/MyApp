@@ -47,3 +47,13 @@ export function reducer(
     }
   }
 }
+
+export const getItemsState = createFeatureSelector<State>('items');
+
+export const {
+  selectEntities: getItemEntities,
+} = adapter.getSelectors(getItemsState);
+
+export const getLoading = (state: State) => state.loading;
+
+export const getError = (state: State) => state.error;
