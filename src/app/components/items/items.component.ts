@@ -9,10 +9,15 @@ import { Item } from 'src/app/models/item';
 })
 export class ItemsComponent implements OnInit {
 
-  @Input() items: Item[]
-  
-  constructor() { }
+  @Input() items: Items;
 
-  ngOnInit() {}
+  constructor() {
+    console.log('app-item');
+  }
+
+  ngOnInit() {
+
+    console.log(this.items);
+  }
 
 }

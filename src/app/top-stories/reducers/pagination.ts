@@ -6,7 +6,7 @@ export interface State {
   total: number;
 }
 
-export const pageSize = 20;
+export const pageSize = 10;
 
 const initialState: State = {
   offset: 0,

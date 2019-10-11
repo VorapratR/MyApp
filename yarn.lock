@@ -465,6 +465,13 @@
   dependencies:
     "@types/cordova" latest
 
+"@ionic-native/in-app-browser@5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/in-app-browser/-/in-app-browser-5.0.0.tgz#a0dbbf8ccb050876c73b16488bdd04caa6907f27"
+  integrity sha512-T0gJwZIYtxWYeB2Gq9h6b1SDPN955wHKMb0yqL5uRvRvEVmyQEbTXnXDxvYcNNz/Q9JwXRULKDKlOlOnB+xC9A==
+  dependencies:
+    "@types/cordova" latest
+
 "@ionic-native/splash-screen@^5.0.0":
   version "5.12.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-5.12.0.tgz#a5c7837f5bc52449a8faa2dcce94fa864733b0af"
@@ -1931,6 +1938,11 @@ copy-webpack-plugin@5.0.3:
     schema-utils "^1.0.0"
     serialize-javascript "^1.7.0"
     webpack-log "^2.0.0"
+
+cordova-plugin-inappbrowser@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-inappbrowser/-/cordova-plugin-inappbrowser-3.1.0.tgz#61520b8de3eb75b37842d2340f5d90a84a073747"
+  integrity sha512-YqrZfYgbGTS20SFID0mrRxud312VH072QVlFonCAkPgtGg1Svy7lELOCNFd+KU7t4mVtZeTEjZPEeefvjaetwQ==
 
 core-js@3.1.4:
   version "3.1.4"

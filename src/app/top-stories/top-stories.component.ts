@@ -6,14 +6,16 @@ import { LoadingController, ToastController } from '@ionic/angular';
 import * as fromTopStories from './reducers';
 import * as topStoriesActions from './actions/top-stories';
 import * as fromItems from '../reducers/items';
-import { filter, concatMap } from 'rxjs/operators';
+import { OpenPageService } from '../services/open-page/open-page.service';
+import { concatMap, filter } from 'rxjs/operators';
 @Component({
   selector: 'app-top-stories',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './top-stories.component.html',
-  styleUrls: ['./top-stories.component.scss'],
+  styleUrls: ['./top-stories.component.scss']
 })
 export class TopStoriesComponent implements OnInit, OnDestroy {
+
   items$: Observable<Items>;
   private itemsLoading$: Observable<boolean>;
   private idsLoading$: Observable<boolean>;
@@ -26,9 +28,9 @@ export class TopStoriesComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<fromTopStories.State>,
     private loadingCtrl: LoadingController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private openPageService: OpenPageService,
   ) {
-    // this.items$ = store.pipe(select(fromTopStories.getDisplayItems));
     // this.itemsLoading$ = store.pipe(select(fromTopStories.isItemsLoading));
     this.items$ = store.pipe(select(fromTopStories.getDisplayItems));
     this.itemsLoading$ = store.pipe(select(fromItems.isItemsLoading));
@@ -57,21 +59,24 @@ export class TopStoriesComponent implements OnInit, OnDestroy {
     unsubscribe());
   }
 
-  load(event) {
+  openUrl(url) {
+    this.openPageService.open(url);
+  }
+  load(event: Event) {
     this.infiniteScrollComponent = event.target;
     this.doLoad(false);
   }
 
-  refresh(event) {
+  refresh(event: Event) {
     this.refresherComponent = event.target;
     this.doLoad(true);
   }
 
   doLoad(refresh: boolean) {
     if (refresh) {
-    this.store.dispatch(new topStoriesActions.Refresh());
+      this.store.dispatch(new topStoriesActions.Refresh());
     } else {
-    this.store.dispatch(new topStoriesActions.LoadMore());
+      this.store.dispatch(new topStoriesActions.LoadMore());
     }
   }
 

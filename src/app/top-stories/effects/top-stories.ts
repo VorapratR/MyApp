@@ -38,16 +38,16 @@ export class TopStoriesEffects {
         ofType(TopStoriesActionTypes.LoadMore),
         withLatestFrom(this.store),
         map(([action, state]) => {
-        const {
-            pagination: {
-                offset,
-                limit,
-            },
-            stories: {
-                ids,
-            }
-        } = state.topStories;
-        return new itemActions.Load(ids.slice(offset, offset + limit));
+            const {
+                pagination: {
+                    offset,
+                    limit,
+                },
+                stories: {
+                    ids,
+                }
+            } = state.topStories;
+            return new itemActions.Load(ids.slice(offset, offset + limit));
         })
     );
 }

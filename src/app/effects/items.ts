@@ -9,8 +9,10 @@ import { Item } from '../models/item';
 
 @Injectable()
     export class ItemsEffects {
-    constructor(private actions$: Actions, private db:
-    AngularFireDatabase) {}
+    constructor(
+        private actions$: Actions,
+        private db: AngularFireDatabase
+    ) {}
 @Effect()
     loadItems$: Observable<Action> = this.actions$.pipe(
         ofType(ItemActionTypes.Load),
