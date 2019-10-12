@@ -1,46 +1,47 @@
-import * as fromRoot from '../../reducers';
-// import * as fromItems from './items';
+import * as fromRoot from '../../reducers/items';
 import * as fromTopStories from './top-stories';
 import * as fromPagination from './pagination';
 import { ActionReducerMap, createFeatureSelector, createSelector } from '@ngrx/store';
-import { getItemEntities,  getItemsError, getItemsState } from '../../reducers/items';
+import { getItemEntities, getItemsError } from '../../reducers/items';
 
 export interface TopStoriesState {
     stories: fromTopStories.State;
     pagination: fromPagination.State;
 }
+
 export interface State extends fromRoot.State {
-    // items: fromItems.State;
     topStories: TopStoriesState;
 }
+
 export const reducers: ActionReducerMap<TopStoriesState> = {
     stories: fromTopStories.reducer,
     pagination: fromPagination.reducer,
 };
+
 export const getTopStoriesState = createFeatureSelector<TopStoriesState>('topStories');
 
 export const getPaginationState = createSelector(
-  getTopStoriesState,
-  state => state.pagination,
+    getTopStoriesState,
+    state => state.pagination,
 );
 
 export const getStoriesState = createSelector(
-  getTopStoriesState,
-  state => state.stories,
+    getTopStoriesState,
+    state => state.stories,
 );
 
 export const getStoryIds = createSelector(
-  getStoriesState,
-  fromTopStories.getIds,
+    getStoriesState,
+    fromTopStories.getIds,
 );
 
 export const getDisplayItems = createSelector(
-  getStoryIds,
-  getItemEntities,
-  getPaginationState,
-  (ids, entities, pagination) => {
-    return ids.slice(0, pagination.offset + pagination.limit).map(id => entities[id]);
-  }
+    getStoryIds,
+    getItemEntities,
+    getPaginationState,
+    (ids, entities, pagination) => {
+        return ids.slice(0, pagination.offset + pagination.limit).map(id => entities[id]);
+    }
 );
 // export const isItemsLoading = createSelector(
 //   getItemsState,
@@ -51,12 +52,13 @@ export const getDisplayItems = createSelector(
 //   fromItems.getError,
 // );
 export const isTopStoriesLoading = createSelector(
-  getStoriesState,
-  fromTopStories.getLoading,
+    getStoriesState,
+    fromTopStories.getLoading,
 );
+
 export const getTopStoriesError = createSelector(
-  getStoriesState,
-  fromTopStories.getError,
+    getStoriesState,
+    fromTopStories.getError,
 );
 
 export const getError = createSelector(

@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  firebase: {
+  hackernews_db: {
     databaseURL: 'http://hacker-news.firebaseio.com'
   }
 };
