@@ -5,6 +5,7 @@ export interface Item {
     by: string;
     time: number;
     score: number;
+    text?: string;
 }
 
 export function createMockItem(id: number = 1): Item {
