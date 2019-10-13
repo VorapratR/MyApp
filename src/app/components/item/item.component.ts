@@ -10,14 +10,13 @@ import { Item } from '../../models/item';
 export class ItemComponent {
   @Input() item: Item;
   @Output() toOpen = new EventEmitter<string>();
-  statusHeart = true;
-  constructor() {
-  }
+  @Output() toShare = new EventEmitter<Item>();
+
   openPage(url: string) {
     this.toOpen.emit(url);
   }
-  addFavorite() {
-    this.statusHeart = !this.statusHeart;
-  }
 
+  share() {
+    this.toShare.emit(this.item);
+  }
 }
