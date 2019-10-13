@@ -18,7 +18,7 @@ import { EmailPasswordPair, NewAccount } from '../../models/user';
 import { from, of } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { Router } from '@angular/router';
-
+import * as favoritesActions from '../../favorites/actions/favorites';
 @Injectable()
 export class AuthEffects {
   constructor(
@@ -55,6 +55,15 @@ export class AuthEffects {
     ofType(AuthActionTypes.LoginSuccess),
     tap(() => this.router.navigate(['/']))
   );
+  
+  @Effect({ dispatch: false })
+  loginRedirect$ = this.action$.pipe(
+    ofType(AuthActionTypes.LoginRedirect, AuthActionTypes.Logout),
+    tap(() => {
+      this.router.navigate(['/login']);
+    })
+  );
+
   @Effect()
   logout$ = this.action$.pipe(
     ofType(AuthActionTypes.Logout),
@@ -65,16 +74,18 @@ export class AuthEffects {
       )
     )
   );
-  // @Effect()
-  // loginWithProvider$ = this.action$.pipe(
-  //   ofType(AuthActionTypes.LoginWithProvider),
-  //   map((action: LoginWithProvider) => action.payload),
-  //   mergeMap((provider: LoginProvider) =>
-  //     from(this.authService.logInWithProvider(provider))
-  //       .pipe(
-  //         mergeMap(user => of<Action>(new LoginSuccess(user), new favoritesActions.Load())),
-  //         catchError(error => of(new LoginFailure(error)))
-  //       )
-  //   )
-  // );
+  @Effect()
+  loginWithProvider$ = this.action$.pipe(
+    ofType(AuthActionTypes.LoginWithProvider),
+    map((action: LoginWithProvider) => action.payload),
+    mergeMap((provider: LoginProvider) =>
+      from(this.authService.logInWithProvider(provider))
+        .pipe(
+          mergeMap(user => of<Action>(new LoginSuccess(user), new favoritesActions.Load())),
+          catchError(error => of(new LoginFailure(error)))
+        )
+    )
+  );
+  
+  
 }
