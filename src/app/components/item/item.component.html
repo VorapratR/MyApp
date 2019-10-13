@@ -2,6 +2,10 @@
   <div>
     <h2 class="title" (click)="openPage(item.url)">{{ item.title }}</h2>
     <div>
+        <span (click)="addFavorite()">
+          <ion-icon *ngIf="!this.statusHeart" name="heart"></ion-icon>
+          <ion-icon *ngIf="this.statusHeart" name="heart-empty"></ion-icon>
+        </span>
       <span>
         <ion-icon name="bulb"></ion-icon>
         {{ item.score }}
