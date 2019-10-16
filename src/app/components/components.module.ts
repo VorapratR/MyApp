@@ -6,11 +6,13 @@ import { CommentComponent } from './comment/comment.component';
 import { CommentsComponent } from './comments/comments.component';
 import { TimeAgoPipe } from './time-ago.pipe';
 import { RouterModule } from '@angular/router';
+import { FavoritesModule } from '../favorites/favorites.module';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule,
+    FavoritesModule,
   ],
   exports: [ItemsComponent, CommentsComponent],
   declarations: [ItemComponent, ItemsComponent, CommentComponent, CommentsComponent, TimeAgoPipe],

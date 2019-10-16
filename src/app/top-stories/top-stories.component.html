@@ -4,7 +4,7 @@
       <ion-buttons slot="secondary">
         <ion-button id="btnShowLogin" routerLink="/login" *ngIf="!(loggedIn$ | async)">Log In</ion-button>
         <ion-button id="btnShowFavorites" routerLink="/favorites" *ngIf="loggedIn$ | async">Favorites</ion-button>
-        <ion-button id="btnLogout" (click)="logout()" *ngIf="loggedIn$ | async">
+        <ion-button slot="end" id="btnLogout" (click)="logout()" *ngIf="loggedIn$ | async">
           <ion-avatar>
             <img slot="icon-only" [src]="getPhotoURL(user$ | async)">
           </ion-avatar>
