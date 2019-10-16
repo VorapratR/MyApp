@@ -26,6 +26,7 @@ import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { FavoritesModule } from './favorites/favorites.module';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -56,6 +57,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
     StatusBar,
     SplashScreen,
     InAppBrowser,
+    SocialSharing,
     {provide: RouterStateSerializer, useClass: CustomRouterStateSerializer},
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {

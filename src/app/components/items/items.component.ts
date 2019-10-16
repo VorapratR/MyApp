@@ -10,9 +10,13 @@ import { Item } from '../../models/item';
 export class ItemsComponent {
   @Input() items: Items;
   @Output() toOpen = new EventEmitter<string>();
-
+  @Output() toShare = new EventEmitter<Item>();
+  
   openPage(url: any) {
     this.toOpen.emit(url);
+  }
+  share(item) {
+    this.toShare.emit(item);
   }
 
 }

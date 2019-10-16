@@ -9,9 +9,11 @@ import * as topStoriesActions from './actions/top-stories';
 import * as fromItems from '../reducers/items';
 import * as fromAuth from '../auth/reducers';
 import * as gravatar from 'gravatar';
+import { SocialSharingService } from '../services/social-sharing/social-sharing.service'
 import { OpenPageService } from '../services/open-page/open-page.service';
 import { concatMap, filter } from 'rxjs/operators';
 import { User } from '../models/user';
+import { Item } from '../models/item';
 @Component({
   selector: 'app-top-stories',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,6 +38,7 @@ export class TopStoriesComponent implements OnInit, OnDestroy {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private openPageService: OpenPageService,
+    private socialSharingService: SocialSharingService,
   ) {
     this.items$ = store.pipe(select(fromTopStories.getDisplayItems));
     this.loggedIn$ = store.pipe(select(fromAuth.getLoggedIn));
@@ -78,6 +81,10 @@ export class TopStoriesComponent implements OnInit, OnDestroy {
     this.doLoad(false);
   }
 
+  share(item: Item) {
+    this.socialSharingService.share(item.title, item.url);
+  }
+  
   refresh(event: Event) {
     this.refresherComponent = event.target;
     this.doLoad(true);
